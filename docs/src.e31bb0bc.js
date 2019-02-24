@@ -43033,7 +43033,7 @@ function (_React$Component) {
 
       return _react.default.createElement("div", {
         className: "App"
-      }, _react.default.createElement("h1", null, "Poker Table"), actionButton, _react.default.createElement("div", {
+      }, _react.default.createElement("div", {
         className: "table"
       }, this.state.players.map(function (player, i) {
         var cards = player.cards;
@@ -43054,10 +43054,10 @@ function (_React$Component) {
           className: "position"
         }, "UTG+1"), _react.default.createElement("div", {
           className: "chips"
-        }, "35,000"), player.percentage !== undefined && _react.default.createElement("div", null, player.percentage, "%")));
+        }, "35,000"), _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"))));
       }), _react.default.createElement("div", {
-        className: "board cards"
-      }, this.state.boardCards.map(function (boardCard, i) {
+        className: "board"
+      }, _react.default.createElement("div", null, actionButton), this.state.boardCards.map(function (boardCard, i) {
         return _react.default.createElement(_Card.default, {
           suit: boardCard.suit,
           value: boardCard.value,
@@ -43100,7 +43100,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52144" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59857" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

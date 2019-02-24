@@ -191,8 +191,6 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <h1>Poker Table</h1>
-        {actionButton}
         <div className="table">
           {this.state.players.map((player, i) => {
             const cards = player.cards;
@@ -205,12 +203,13 @@ class App extends React.Component {
                 <div className="info">
                   <div className="position">UTG+1</div>
                   <div className="chips">35,000</div>
-                  {player.percentage !== undefined && <div>{player.percentage}%</div>}
+                  <div>{player.percentage === undefined ? '--' : `${player.percentage}%`}</div>
                 </div>
               </div>
             );
           })}
-          <div className="board cards">
+          <div className="board">
+            <div>{actionButton}</div>
             {this.state.boardCards.map((boardCard, i) => {
               return (
                 <Card suit={boardCard.suit} value={boardCard.value} key={`boardCard_${i}`} />
