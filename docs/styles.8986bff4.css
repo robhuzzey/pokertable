@@ -1,0 +1,75 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.table {
+  position: relative;
+  margin: 5em;
+  background: green;
+  width: 30em;
+  height: 15em;
+  border-radius: 200px;
+}
+
+.board {
+  position: absolute;
+  top: 36%;
+  left: 28%;
+}
+
+.board .card {
+  width: 2.5em;
+  height: 3.5em;
+}
+
+.player {
+  z-index: 1000;
+  position: absolute;
+  width: 6em;
+  text-align: center;
+}
+
+.info {
+  position: relative;
+  margin-top: -2em;
+  background: #DDD;
+  border: 1px solid #333;
+}
+.cards {
+  margin: -1.5em auto 0 auto;
+}
+
+.cards img {
+  width: 2.5em;
+  box-shadow: 1px 3px 5px #333;
+}
+
+.player:nth-child(1) {
+  top: 90%;
+  left: 70%;
+}
+
+.player:nth-child(2) {
+  top: 90%;
+  left: 20%;
+}
+
+.player:nth-child(3) {
+  top: 40%;
+  left: -5%;
+}
+
+.player:nth-child(4) {
+  top: -5%;
+  left: 20%;
+}
+
+.player:nth-child(5) {
+  top: -5%;
+  left: 70%;
+}
+
+.player:nth-child(6) {
+  top: 40%;
+  left: 90%;
+}
