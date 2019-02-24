@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "mkdir -p docs && cp -r src/images docs/images",
-    "start": "parcel src/index.html --out-dir docs/"
+    "start": "parcel src/index.html --out-dir docs/ --public-url ./"
   },
   "author": "",
   "license": "ISC",
