@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prestart": "mkdir -p docs && cp -r src/images docs/images",
-    "start": "parcel src/index.html --out-dir docs/ --public-url ./"
+    "moveimages": "mkdir -p dist && cp -r src/images dist/images",
+    "prestart": "npm run moveimages",
+    "start": "parcel src/index.html",
+    "prebuild": "npm run moveimages",
+    "build": "parcel build src/index.html --public-url ./",
+    "deploy": "npm run build && ./scripts/deploy-to-github.sh"
   },
   "author": "",
   "license": "ISC",
