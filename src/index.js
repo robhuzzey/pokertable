@@ -217,7 +217,6 @@ class App extends React.Component {
             })}
           </div>
         </div>
-        {this.state.straightDraw && <p>Straight draw</p>}
       </div>
     );
   }

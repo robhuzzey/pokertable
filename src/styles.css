@@ -1,14 +1,28 @@
-.App {
-  font-family: sans-serif;
-  text-align: center;
+#warnOrientation {
+  display: none;
 }
+
+#root {
+  font-size: 1em;
+  border: 1px solid red;
+  display: flex;
+  width: 95vw;
+  height: 50vw;
+  margin: 0 auto;
+}
+
+.App {
+  width: 100%;
+  height: 100%;
+  display: table;
+  padding: 3em;
+}
+
 .table {
   position: relative;
-  margin: 3em auto 0 auto;
   background: green;
-  width: 30em;
-  height: 15em;
   border-radius: 200px;
+  display: table-cell;
 }
 
 .board {
@@ -18,6 +32,7 @@
   left: 50%;
   position: absolute;
   transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .board img {
@@ -81,4 +96,14 @@
 .player:nth-child(6) {
   top: 40%;
   left: 90%;
+}
+
+@media (orientation: portrait) {
+  #warnOrientation {
+    display: block;
+  }
+
+  #root {
+    display: none;
+  }
 }
