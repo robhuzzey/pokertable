@@ -42499,6 +42499,7 @@ var Card = function Card(props) {
 
   var card = "".concat(value).concat(props.suit.toUpperCase());
   return _react.default.createElement("img", {
+    className: "card",
     src: "images/cardimages-large/".concat(card, ".svg")
   });
 };
@@ -43050,11 +43051,7 @@ function (_React$Component) {
           value: cards[1].value
         })), _react.default.createElement("div", {
           className: "info"
-        }, _react.default.createElement("div", {
-          className: "position"
-        }, "UTG+1"), _react.default.createElement("div", {
-          className: "chips"
-        }, "35,000"), _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"))));
+        }, _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"))));
       }), _react.default.createElement("div", {
         className: "board"
       }, _react.default.createElement("div", null, actionButton), this.state.boardCards.map(function (boardCard, i) {
@@ -43100,7 +43097,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64588" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53735" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
