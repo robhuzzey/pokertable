@@ -19,7 +19,8 @@ class App extends React.Component {
       loading: false,
       straightDraw: false,
       flushDraw: false,
-      fullHouseDraw: false
+      fullHouseDraw: false,
+      playerExcluded: false
     };
 
     this.state = Object.assign({}, this.defaultState);
@@ -30,6 +31,7 @@ class App extends React.Component {
     this.turn = this.turn.bind(this);
     this.river = this.river.bind(this);
     this.checkStraightDraw = this.checkStraightDraw.bind(this);
+    this.excludePlayer = this.excludePlayer.bind(this)
   }
 
   shuffle(deck) {
@@ -43,34 +45,43 @@ class App extends React.Component {
   calculateEquity() {
     const equity = [];
     this.state.players.map(player => {
-      const cardString = `${player.cards[0].key}${player.cards[1].key}`;
-      equity.push(CardGroup.fromString(cardString));
+      if (!player.excluded) {
+        const cardString = `${player.cards[0].key}${player.cards[1].key}`;
+        equity.push(CardGroup.fromString(cardString));
+      }
     });
     const board = CardGroup.fromString(
       this.state.boardCards.map(card => card.key).join("")
     );
     const result = OddsCalculator.calculate(equity, board);
 
-    const odds = {
-      percentages: result.equities.map(equity => {
-        return equity.getEquity();
-      }),
-      ranks: result.handranks.map(hand => {
-        return hand.alias;
-      })
-    };
+    const percentages = result.equities.map(equity => {
+      return equity.getEquity();
+    })
 
-    const players = [].concat(this.state.players).map((player, i) => {
+    const ranks = result.handranks.map(hand => {
+      return hand.alias;
+    })
+
+    const players = [].concat(this.state.players).map((player) => {
+      let percentage
+      let rank
+      if (!player.excluded) {
+        percentage = percentages.shift()
+        rank = ranks.shift()
+      }
       return Object.assign({}, player, {
-        percentage: odds.percentages[i],
-        rank: odds.ranks[i]
+        percentage,
+        rank
       });
     });
     this.setState(() => {
       return Object.assign({}, this.state, {
+        calculatingEquity: false,
+        playerExcluded: false,
         players
       });
-    }, this.checkStraightDraw);
+    }, this.checkStraightDraw); 
   }
 
   flop() {
@@ -116,7 +127,9 @@ class App extends React.Component {
     for (var i = 0; i < 6; i++) {
       const card1 = deck.pop();
       const card2 = deck.pop();
+      const id = `${card1.key}_${card2.key}`
       players.push({
+        id,
         cards: [card1, card2]
       });
     }
@@ -157,6 +170,24 @@ class App extends React.Component {
     });
   }
 
+  excludePlayer(playerId, reCalculateEquity = false) {
+    const players = this.state.players.map(player => {
+      if(player.id === playerId) {
+        player.excluded = !player.excluded
+      }
+      return player
+    })
+
+    this.setState(() => {
+      return Object.assign({}, this.state, {
+        playerExcluded: true,
+        players
+      })
+    }, () => {
+      reCalculateEquity && this.calculateEquity()
+    })
+  }
+
   render() {
     const cards = this.state.deck;
     if (this.state.loading) {
@@ -172,9 +203,23 @@ class App extends React.Component {
         actionButton = (
           <React.Fragment>
             <button onClick={this.flop}>Deal Flop</button>
-            <button onClick={this.calculateEquity}>Calculate Equity</button>
+            <button onClick={() => {
+              const ok = confirm('This takes a few seconds')
+              if(ok) {
+                this.setState(() => {
+                  return Object.assign({}, this.state, {
+                    calculatingEquity: true
+                  })
+                }, () => {
+                  // Timeout to allow state change before CPU goes into overdrive!
+                  setTimeout(() => {
+                    this.calculateEquity()
+                  }, 1000)
+                })
+              }
+            }}>Calculate Pre-flop Equity</button>
           </React.Fragment>
-        );
+        )
         break;
       case "postflop":
         actionButton = <button onClick={this.turn}>Deal Turn</button>;
@@ -192,22 +237,31 @@ class App extends React.Component {
     return (
       <div className="App">
         <div className="table">
-          {this.state.players.map((player, i) => {
+          {this.state.players.map((player) => {
             const cards = player.cards;
             return (
-              <div className="player" key={`player_${i}`}>
+              <div className={`player ${player.excluded ? 'excluded' : ''}`} key={`player_${player.id}`}>
                 <div className="cards">
                   <Card suit={cards[0].suit} value={cards[0].value} />
                   <Card suit={cards[1].suit} value={cards[1].value} />
                 </div>
                 <div className="info">
-                  <div>{player.percentage === undefined ? '--' : `${player.percentage}%`}</div>
+                  <div>
+                    {player.percentage === undefined ? '--' : `${player.percentage}%`}
+                    <button onClick={() => this.excludePlayer(player.id, this.state.boardCards.length !== 0)}>{player.excluded ? 'un' : ''}fold</button>
+                  </div>
                 </div>
               </div>
             );
           })}
           <div className="board">
-            <div>{actionButton}</div>
+            {this.state.calculatingEquity ? (
+              <div>Loading... please wait...</div>
+            ) : (
+              <div>
+                {actionButton}
+              </div>
+            )}
             {this.state.boardCards.map((boardCard, i) => {
               return (
                 <Card suit={boardCard.suit} value={boardCard.value} key={`boardCard_${i}`} />
