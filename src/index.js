@@ -201,8 +201,6 @@ class App extends React.Component {
                   <Card suit={cards[1].suit} value={cards[1].value} />
                 </div>
                 <div className="info">
-                  <div className="position">UTG+1</div>
-                  <div className="chips">35,000</div>
                   <div>{player.percentage === undefined ? '--' : `${player.percentage}%`}</div>
                 </div>
               </div>

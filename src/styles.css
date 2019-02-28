@@ -4,7 +4,6 @@
 
 #root {
   font-size: 1em;
-  border: 1px solid red;
   display: flex;
   width: 95vw;
   height: 50vw;
@@ -35,8 +34,8 @@
   text-align: center;
 }
 
-.board img {
-  width: 20%;
+.board .card {
+  width: 18%;
 }
 
 .board button {
@@ -54,48 +53,50 @@
 
 .info {
   position: relative;
-  margin-top: -2em;
+  margin-top: -2.5em;
+  min-height: 3em;
+  line-height: 3em;
   background: #DDD;
   border: 1px solid #333;
+  border-radius: 4px;
 }
 
 .cards {
-  margin: -1.5em auto 0 auto;
+  margin: 0 auto 0 auto;
 }
 
-.cards img {
+.card {
   width:45%;
-  box-shadow: 1px 3px 5px #333;
 }
 
 .player:nth-child(1) {
-  top: 90%;
+  bottom: -3em;
   left: 70%;
 }
 
 .player:nth-child(2) {
-  top: 90%;
+  bottom: -3em;
   left: 20%;
 }
 
 .player:nth-child(3) {
   top: 40%;
-  left: -5%;
+  left: -3em;
 }
 
 .player:nth-child(4) {
-  top: -5%;
+  top: -3em;
   left: 20%;
 }
 
 .player:nth-child(5) {
-  top: -5%;
+  top: -3em;
   left: 70%;
 }
 
 .player:nth-child(6) {
   top: 40%;
-  left: 90%;
+  right: -3em;
 }
 
 @media (orientation: portrait) {

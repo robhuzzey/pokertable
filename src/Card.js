@@ -22,7 +22,7 @@ const Card = props => {
   }
   const card = `${value}${props.suit.toUpperCase()}`
   return (
-    <img src={`images/cardimages-large/${card}.svg`} />
+    <img className='card' src={`images/cardimages-large/${card}.svg`} />
   )
 }
 
