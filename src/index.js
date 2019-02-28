@@ -20,7 +20,8 @@ class App extends React.Component {
       straightDraw: false,
       flushDraw: false,
       fullHouseDraw: false,
-      playerExcluded: false
+      playerExcluded: false,
+      iterations: 0
     };
 
     this.state = Object.assign({}, this.defaultState);
@@ -55,6 +56,8 @@ class App extends React.Component {
     );
     const result = OddsCalculator.calculate(equity, board);
 
+    const iterations = result.iterations
+
     const percentages = result.equities.map(equity => {
       return equity.getEquity();
     })
@@ -79,7 +82,8 @@ class App extends React.Component {
       return Object.assign({}, this.state, {
         calculatingEquity: false,
         playerExcluded: false,
-        players
+        players,
+        iterations
       });
     }, this.checkStraightDraw); 
   }
@@ -208,6 +212,7 @@ class App extends React.Component {
               if(ok) {
                 this.setState(() => {
                   return Object.assign({}, this.state, {
+                    iterations: 0,
                     calculatingEquity: true
                   })
                 }, () => {
@@ -249,6 +254,8 @@ class App extends React.Component {
                   <div>
                     {player.percentage === undefined ? '--' : `${player.percentage}%`}
                     <button onClick={() => this.excludePlayer(player.id, this.state.boardCards.length !== 0)}>{player.excluded ? 'un' : ''}fold</button>
+                    <br />
+                    <small>{player.rank}</small>
                   </div>
                 </div>
               </div>
@@ -256,7 +263,7 @@ class App extends React.Component {
           })}
           <div className="board">
             {this.state.calculatingEquity ? (
-              <div>Loading... please wait...</div>
+              <div className='loading'>Loading... please wait...</div>
             ) : (
               <div>
                 {actionButton}
@@ -267,6 +274,7 @@ class App extends React.Component {
                 <Card suit={boardCard.suit} value={boardCard.value} key={`boardCard_${i}`} />
               );
             })}
+            {this.state.iterations !== 0 && <div className='iterations'>{this.state.iterations} variants calculated</div>}
           </div>
         </div>
       </div>
