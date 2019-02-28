@@ -42822,7 +42822,8 @@ function (_React$Component) {
       loading: false,
       straightDraw: false,
       flushDraw: false,
-      fullHouseDraw: false
+      fullHouseDraw: false,
+      playerExcluded: false
     };
     _this.state = Object.assign({}, _this.defaultState);
     _this.deal = _this.deal.bind(_assertThisInitialized(_this));
@@ -42831,6 +42832,7 @@ function (_React$Component) {
     _this.turn = _this.turn.bind(_assertThisInitialized(_this));
     _this.river = _this.river.bind(_assertThisInitialized(_this));
     _this.checkStraightDraw = _this.checkStraightDraw.bind(_assertThisInitialized(_this));
+    _this.excludePlayer = _this.excludePlayer.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -42853,8 +42855,10 @@ function (_React$Component) {
 
       var equity = [];
       this.state.players.map(function (player) {
-        var cardString = "".concat(player.cards[0].key).concat(player.cards[1].key);
-        equity.push(_pokerOddsCalculator.CardGroup.fromString(cardString));
+        if (!player.excluded) {
+          var cardString = "".concat(player.cards[0].key).concat(player.cards[1].key);
+          equity.push(_pokerOddsCalculator.CardGroup.fromString(cardString));
+        }
       });
 
       var board = _pokerOddsCalculator.CardGroup.fromString(this.state.boardCards.map(function (card) {
@@ -42863,22 +42867,30 @@ function (_React$Component) {
 
       var result = _pokerOddsCalculator.OddsCalculator.calculate(equity, board);
 
-      var odds = {
-        percentages: result.equities.map(function (equity) {
-          return equity.getEquity();
-        }),
-        ranks: result.handranks.map(function (hand) {
-          return hand.alias;
-        })
-      };
-      var players = [].concat(this.state.players).map(function (player, i) {
+      var percentages = result.equities.map(function (equity) {
+        return equity.getEquity();
+      });
+      var ranks = result.handranks.map(function (hand) {
+        return hand.alias;
+      });
+      var players = [].concat(this.state.players).map(function (player) {
+        var percentage;
+        var rank;
+
+        if (!player.excluded) {
+          percentage = percentages.shift();
+          rank = ranks.shift();
+        }
+
         return Object.assign({}, player, {
-          percentage: odds.percentages[i],
-          rank: odds.ranks[i]
+          percentage: percentage,
+          rank: rank
         });
       });
       this.setState(function () {
         return Object.assign({}, _this2.state, {
+          calculatingEquity: false,
+          playerExcluded: false,
           players: players
         });
       }, this.checkStraightDraw);
@@ -42939,7 +42951,9 @@ function (_React$Component) {
       for (var i = 0; i < 6; i++) {
         var card1 = deck.pop();
         var card2 = deck.pop();
+        var id = "".concat(card1.key, "_").concat(card2.key);
         players.push({
+          id: id,
           cards: [card1, card2]
         });
       }
@@ -42989,8 +43003,32 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "excludePlayer",
+    value: function excludePlayer(playerId) {
+      var _this8 = this;
+
+      var reCalculateEquity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var players = this.state.players.map(function (player) {
+        if (player.id === playerId) {
+          player.excluded = !player.excluded;
+        }
+
+        return player;
+      });
+      this.setState(function () {
+        return Object.assign({}, _this8.state, {
+          playerExcluded: true,
+          players: players
+        });
+      }, function () {
+        reCalculateEquity && _this8.calculateEquity();
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this9 = this;
+
       var cards = this.state.deck;
 
       if (this.state.loading) {
@@ -43004,8 +43042,23 @@ function (_React$Component) {
           actionButton = _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("button", {
             onClick: this.flop
           }, "Deal Flop"), _react.default.createElement("button", {
-            onClick: this.calculateEquity
-          }, "Calculate Equity"));
+            onClick: function onClick() {
+              var ok = confirm('This takes a few seconds');
+
+              if (ok) {
+                _this9.setState(function () {
+                  return Object.assign({}, _this9.state, {
+                    calculatingEquity: true
+                  });
+                }, function () {
+                  // Timeout to allow state change before CPU goes into overdrive!
+                  setTimeout(function () {
+                    _this9.calculateEquity();
+                  }, 1000);
+                });
+              }
+            }
+          }, "Calculate Pre-flop Equity"));
           break;
 
         case "postflop":
@@ -43036,11 +43089,11 @@ function (_React$Component) {
         className: "App"
       }, _react.default.createElement("div", {
         className: "table"
-      }, this.state.players.map(function (player, i) {
+      }, this.state.players.map(function (player) {
         var cards = player.cards;
         return _react.default.createElement("div", {
-          className: "player",
-          key: "player_".concat(i)
+          className: "player ".concat(player.excluded ? 'excluded' : ''),
+          key: "player_".concat(player.id)
         }, _react.default.createElement("div", {
           className: "cards"
         }, _react.default.createElement(_Card.default, {
@@ -43051,10 +43104,14 @@ function (_React$Component) {
           value: cards[1].value
         })), _react.default.createElement("div", {
           className: "info"
-        }, _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"))));
+        }, _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"), _react.default.createElement("button", {
+          onClick: function onClick() {
+            return _this9.excludePlayer(player.id, _this9.state.boardCards.length !== 0);
+          }
+        }, player.excluded ? 'un' : '', "fold"))));
       }), _react.default.createElement("div", {
         className: "board"
-      }, _react.default.createElement("div", null, actionButton), this.state.boardCards.map(function (boardCard, i) {
+      }, this.state.calculatingEquity ? _react.default.createElement("div", null, "Loading... please wait...") : _react.default.createElement("div", null, actionButton), this.state.boardCards.map(function (boardCard, i) {
         return _react.default.createElement(_Card.default, {
           suit: boardCard.suit,
           value: boardCard.value,
@@ -43097,7 +43154,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53735" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63298" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
