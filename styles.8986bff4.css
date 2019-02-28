@@ -62,12 +62,17 @@ button {
 
 .info {
   position: relative;
-  margin-top: -1.5em;
-  min-height: 2em;
+  margin-top: -3em;
+  min-height: 3em;
   line-height: 2em;
   background: #DDD;
   border: 1px solid #333;
   border-radius: 4px;
+}
+
+.iterations, .loading {
+  color: #FFF;
+  font-size: 0.75em
 }
 
 .cards {

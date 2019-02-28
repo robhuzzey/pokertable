@@ -42823,7 +42823,8 @@ function (_React$Component) {
       straightDraw: false,
       flushDraw: false,
       fullHouseDraw: false,
-      playerExcluded: false
+      playerExcluded: false,
+      iterations: 0
     };
     _this.state = Object.assign({}, _this.defaultState);
     _this.deal = _this.deal.bind(_assertThisInitialized(_this));
@@ -42867,6 +42868,7 @@ function (_React$Component) {
 
       var result = _pokerOddsCalculator.OddsCalculator.calculate(equity, board);
 
+      var iterations = result.iterations;
       var percentages = result.equities.map(function (equity) {
         return equity.getEquity();
       });
@@ -42891,7 +42893,8 @@ function (_React$Component) {
         return Object.assign({}, _this2.state, {
           calculatingEquity: false,
           playerExcluded: false,
-          players: players
+          players: players,
+          iterations: iterations
         });
       }, this.checkStraightDraw);
     }
@@ -43048,6 +43051,7 @@ function (_React$Component) {
               if (ok) {
                 _this9.setState(function () {
                   return Object.assign({}, _this9.state, {
+                    iterations: 0,
                     calculatingEquity: true
                   });
                 }, function () {
@@ -43108,16 +43112,20 @@ function (_React$Component) {
           onClick: function onClick() {
             return _this9.excludePlayer(player.id, _this9.state.boardCards.length !== 0);
           }
-        }, player.excluded ? 'un' : '', "fold"))));
+        }, player.excluded ? 'un' : '', "fold"), _react.default.createElement("br", null), _react.default.createElement("small", null, player.rank))));
       }), _react.default.createElement("div", {
         className: "board"
-      }, this.state.calculatingEquity ? _react.default.createElement("div", null, "Loading... please wait...") : _react.default.createElement("div", null, actionButton), this.state.boardCards.map(function (boardCard, i) {
+      }, this.state.calculatingEquity ? _react.default.createElement("div", {
+        className: "loading"
+      }, "Loading... please wait...") : _react.default.createElement("div", null, actionButton), this.state.boardCards.map(function (boardCard, i) {
         return _react.default.createElement(_Card.default, {
           suit: boardCard.suit,
           value: boardCard.value,
           key: "boardCard_".concat(i)
         });
-      }))));
+      }), this.state.iterations !== 0 && _react.default.createElement("div", {
+        className: "iterations"
+      }, this.state.iterations, " variants calculated"))));
     }
   }]);
 
@@ -43154,7 +43162,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63298" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50120" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
