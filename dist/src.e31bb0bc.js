@@ -43108,11 +43108,12 @@ function (_React$Component) {
           value: cards[1].value
         })), _react.default.createElement("div", {
           className: "info"
-        }, _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"), _react.default.createElement("button", {
+        }, _react.default.createElement("div", null, player.percentage === undefined ? '--' : "".concat(player.percentage, "%"), _react.default.createElement("br", null), _react.default.createElement("small", null, player.rank))), _react.default.createElement("button", {
+          className: "fold",
           onClick: function onClick() {
             return _this9.excludePlayer(player.id, _this9.state.boardCards.length !== 0);
           }
-        }, player.excluded ? 'un' : '', "fold"), _react.default.createElement("br", null), _react.default.createElement("small", null, player.rank))));
+        }, player.excluded ? 'un' : '', "fold"));
       }), _react.default.createElement("div", {
         className: "board"
       }, this.state.calculatingEquity ? _react.default.createElement("div", {
@@ -43162,7 +43163,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50120" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63559" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

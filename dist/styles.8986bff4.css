@@ -44,7 +44,7 @@ button {
 }
 
 .board .card {
-  width: 18%;
+  height: 4em;
 }
 
 .board button {
@@ -54,17 +54,21 @@ button {
 }
 
 .player {
-  z-index: 1000;
   position: absolute;
-  width: 20%;
-  text-align: center;
+  z-index: 2000;
+}
+
+.fold {
+  width: 100%;
 }
 
 .info {
-  position: relative;
-  margin-top: -3em;
-  min-height: 3em;
-  line-height: 2em;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 10px;
+  z-index: 10000;
+  margin-top: -4em;
+  min-height: 2em;
   background: #DDD;
   border: 1px solid #333;
   border-radius: 4px;
@@ -77,10 +81,12 @@ button {
 
 .cards {
   margin: 0 auto 0 auto;
+  position: relative;
+  z-index: -1;
 }
 
 .card {
-  width:45%;
+  height:4em;
 }
 
 .excluded {
@@ -98,8 +104,8 @@ button {
 }
 
 .player:nth-child(3) {
-  top: 40%;
-  left: -3em;
+  top: 30%;
+  left: -2em;
 }
 
 .player:nth-child(4) {
@@ -113,8 +119,8 @@ button {
 }
 
 .player:nth-child(6) {
-  top: 40%;
-  right: -3em;
+  top: 30%;
+  right: -2em;
 }
 
 @media (orientation: portrait) {

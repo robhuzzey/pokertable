@@ -253,11 +253,11 @@ class App extends React.Component {
                 <div className="info">
                   <div>
                     {player.percentage === undefined ? '--' : `${player.percentage}%`}
-                    <button onClick={() => this.excludePlayer(player.id, this.state.boardCards.length !== 0)}>{player.excluded ? 'un' : ''}fold</button>
                     <br />
                     <small>{player.rank}</small>
                   </div>
                 </div>
+                <button className='fold' onClick={() => this.excludePlayer(player.id, this.state.boardCards.length !== 0)}>{player.excluded ? 'un' : ''}fold</button>
               </div>
             );
           })}
