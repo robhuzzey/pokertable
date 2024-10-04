@@ -1,286 +1,119 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { CardGroup, OddsCalculator } from "poker-odds-calculator";
-
+import React, { useEffect, useState } from "react";
+import { createRoot } from 'react-dom/client';
+import cards from "./cards.json";
+import { deal } from "./utils/deal";
+import { getCards } from "./utils/getCards";
+import { getOdds } from "./utils/getOdds";
+import { shuffle } from "./utils/shuffle";
 import Card from "./Card";
 
-import cards from "./cards.json";
+const App = () => {
+  const [deck, setDeck] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [odds, setOdds] = useState({});
+  const [board, setBoard] = useState([]);
+  const [folded, setFolded] = useState([]);
+  const [gameCount, setGameCount] = useState(1);
+  const [burnedCards, setBurnedCards] = useState([]);
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.defaultState = {
-      status: null,
-      players: [],
-      boardCards: [],
-      deck: [],
-      error: null,
-      equities: [],
-      loading: false,
-      straightDraw: false,
-      flushDraw: false,
-      fullHouseDraw: false,
-      playerExcluded: false,
-      iterations: 0
-    };
-
-    this.state = Object.assign({}, this.defaultState);
-
-    this.deal = this.deal.bind(this);
-    this.calculateEquity = this.calculateEquity.bind(this);
-    this.flop = this.flop.bind(this);
-    this.turn = this.turn.bind(this);
-    this.river = this.river.bind(this);
-    this.checkStraightDraw = this.checkStraightDraw.bind(this);
-    this.excludePlayer = this.excludePlayer.bind(this)
+  const newGame = () => {
+    setDeck([]);
+    setPlayers([]);
+    setOdds({});
+    setBoard([]);
+    setFolded([]);
+    setGameCount(gameCount + 1);
   }
 
-  shuffle(deck) {
-    for (let i = deck.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j], deck[i]];
-    }
-    return deck;
-  }
+  useEffect(() => {
+    const shuffledCards = shuffle(cards);
+    const { players, deck } = deal(shuffledCards, 6, 2);
+    setPlayers(players);
+    setDeck(deck);
+  }, [gameCount]);
 
-  calculateEquity() {
-    const equity = [];
-    this.state.players.map(player => {
-      if (!player.excluded) {
-        const cardString = `${player.cards[0].key}${player.cards[1].key}`;
-        equity.push(CardGroup.fromString(cardString));
+  useEffect(() => {
+    const playerCardsInPlay = players.reduce((acc, playerCards, i) => {
+      if (!folded.includes(i)) {
+        acc.push(playerCards.map(card => {
+          return card.key;
+        }))
       }
+      return acc;
+    }, []);
+    const boardCardsInPlay = board.map(card => {
+      return card.key;
     });
-    const board = CardGroup.fromString(
-      this.state.boardCards.map(card => card.key).join("")
-    );
-    const result = OddsCalculator.calculate(equity, board);
 
-    const iterations = result.iterations
-
-    const percentages = result.equities.map(equity => {
-      return equity.getEquity();
-    })
-
-    const ranks = result.handranks.map(hand => {
-      return hand.alias;
-    })
-
-    const players = [].concat(this.state.players).map((player) => {
-      let percentage
-      let rank
-      if (!player.excluded) {
-        percentage = percentages.shift()
-        rank = ranks.shift()
+    const details = getOdds(playerCardsInPlay, boardCardsInPlay).details;
+    // Find the maximum equity value
+    const maxEquity = Math.max(...details.map(obj => obj.equity));
+    const oddsAsMap = details.reduce((acc, curr) => {
+      acc[curr.key] = {
+        equity: curr.equity,
+        rank: curr.rank,
+        best: curr.equity === maxEquity
       }
-      return Object.assign({}, player, {
-        percentage,
-        rank
-      });
-    });
-    this.setState(() => {
-      return Object.assign({}, this.state, {
-        calculatingEquity: false,
-        playerExcluded: false,
-        players,
-        iterations
-      });
-    }, this.checkStraightDraw); 
+      return acc;
+    }, {});
+    setOdds(oddsAsMap);
+  }, [players, board, folded]);
+
+  const dealBoard = (numberOfCards) => {
+    burn(1);
+    const { cards, deck: remainingDeck } = getCards(numberOfCards, deck);
+    setBoard([...board,...cards]);
+    setDeck(remainingDeck);
   }
 
-  flop() {
-    const deck = [].concat(this.state.deck);
-    const boardCards = [deck.pop(), deck.pop(), deck.pop()];
-    this.setState(() => {
-      return Object.assign({}, this.state, {
-        deck,
-        boardCards,
-        status: "postflop"
-      });
-    }, this.calculateEquity);
+  const fold = (i) => {
+    setFolded([...folded, i]);
   }
 
-  turn() {
-    const deck = [].concat(this.state.deck);
-    const boardCards = [].concat(this.state.boardCards, deck.pop());
-    this.setState(() => {
-      return Object.assign({}, this.state, {
-        deck,
-        boardCards,
-        status: "postturn"
-      });
-    }, this.calculateEquity);
+  const burn = (numberOfCards) => {
+    const { cards, deck: remainingDeck } = getCards(numberOfCards, deck);
+    setBurnedCards([...cards, ...burnedCards]);
+    setDeck(remainingDeck);
   }
 
-  river() {
-    const deck = [].concat(this.state.deck);
-    const boardCards = [].concat(this.state.boardCards, deck.pop());
-    this.setState(() => {
-      return Object.assign({}, this.state, {
-        deck,
-        boardCards,
-        status: "postriver"
-      });
-    }, this.calculateEquity);
-  }
-
-  deal() {
-    const deck = this.shuffle([].concat(cards));
-    const players = [];
-
-    for (var i = 0; i < 6; i++) {
-      const card1 = deck.pop();
-      const card2 = deck.pop();
-      const id = `${card1.key}_${card2.key}`
-      players.push({
-        id,
-        cards: [card1, card2]
-      });
-    }
-
-    this.setState(() => {
-      return Object.assign({}, this.defaultState, {
-        loading: false,
-        players,
-        deck,
-        equities: [],
-        boardCards: [],
-        status: "preflop"
-      });
-    });
-  }
-
-  checkStraightDraw() {
-    const values = this.state.boardCards
-      .map(card => card.value)
-      .sort((a, b) => a - b);
-    let straightDraw = false;
-    for (let i = 0; i < values.length; i++) {
-      const nextEntry = values[i + 1];
-      if (nextEntry && !straightDraw) {
-        const diff = nextEntry - values[i];
-        console.log("diff", diff);
-        if (diff <= 3) {
-          straightDraw = true;
-        } else {
-          straightDraw = false;
-        }
-      }
-    }
-    this.setState(() => {
-      return Object.assign({}, this.state, {
-        straightDraw
-      });
-    });
-  }
-
-  excludePlayer(playerId, reCalculateEquity = false) {
-    const players = this.state.players.map(player => {
-      if(player.id === playerId) {
-        player.excluded = !player.excluded
-      }
-      return player
-    })
-
-    this.setState(() => {
-      return Object.assign({}, this.state, {
-        playerExcluded: true,
-        players
-      })
-    }, () => {
-      reCalculateEquity && this.calculateEquity()
-    })
-  }
-
-  render() {
-    const cards = this.state.deck;
-    if (this.state.loading) {
-      return (
-        <div>
-          <p>loading...</p>
-        </div>
-      );
-    }
-    let actionButton;
-    switch (this.state.status) {
-      case "preflop":
-        actionButton = (
-          <React.Fragment>
-            <button onClick={this.flop}>Deal Flop</button>
-            <button onClick={() => {
-              const ok = confirm('This takes a few seconds')
-              if(ok) {
-                this.setState(() => {
-                  return Object.assign({}, this.state, {
-                    iterations: 0,
-                    calculatingEquity: true
-                  })
-                }, () => {
-                  // Timeout to allow state change before CPU goes into overdrive!
-                  setTimeout(() => {
-                    this.calculateEquity()
-                  }, 1000)
-                })
-              }
-            }}>Calculate Pre-flop Equity</button>
-          </React.Fragment>
-        )
-        break;
-      case "postflop":
-        actionButton = <button onClick={this.turn}>Deal Turn</button>;
-        break;
-      case "postturn":
-        actionButton = <button onClick={this.river}>Deal River</button>;
-        break;
-      case "postriver":
-        actionButton = <button onClick={this.deal}>New Game</button>;
-        break;
-      default:
-        actionButton = <button onClick={this.deal}>Deal</button>;
-    }
-
-    return (
-      <div className="App">
-        <div className="table">
-          {this.state.players.map((player) => {
-            const cards = player.cards;
-            return (
-              <div className={`player ${player.excluded ? 'excluded' : ''}`} key={`player_${player.id}`}>
-                <div className="cards">
-                  <Card suit={cards[0].suit} value={cards[0].value} />
-                  <Card suit={cards[1].suit} value={cards[1].value} />
-                </div>
-                <div className="info">
-                  <div>
-                    {player.percentage === undefined ? '--' : `${player.percentage}%`}
-                    <br />
-                    <small>{player.rank}</small>
-                  </div>
-                </div>
-                <button className='fold' onClick={() => this.excludePlayer(player.id, this.state.boardCards.length !== 0)}>{player.excluded ? 'un' : ''}fold</button>
+  return (
+    <div>
+      <div className="table">
+        {players.map((cards, i) => {
+          const key = cards.reduce((acc, curr) => {
+            acc.push(curr.key);
+            return acc;
+          }, []).sort().join('');
+          const hasFolded = folded.includes(i);
+          return (
+            <div key={`player_${i}`} className={`player${hasFolded ? ' excluded' : ''}${odds[key]?.best ? ' best' : ''}`}>
+              <div className="equity">{odds[key]?.equity}%</div>
+              <div className="cards">
+                {cards.map(card => {
+                  return <Card className="card" key={`card_${card.value}_${card.suit}`} value={card.value} suit={card.suit} />
+                })}
               </div>
-            );
-          })}
-          <div className="board">
-            {this.state.calculatingEquity ? (
-              <div className='loading'>Loading... please wait...</div>
-            ) : (
-              <div>
-                {actionButton}
-              </div>
-            )}
-            {this.state.boardCards.map((boardCard, i) => {
-              return (
-                <Card suit={boardCard.suit} value={boardCard.value} key={`boardCard_${i}`} />
-              );
-            })}
-            {this.state.iterations !== 0 && <div className='iterations'>{this.state.iterations} variants calculated</div>}
-          </div>
-        </div>
+              <span className="info">{odds[key]?.rank} <button onClick={() => fold(i)} disabled={hasFolded ? 'disabled' : ''}>Fold{hasFolded ? 'ed' : ''}</button></span>
+            </div>
+          )
+        })}
       </div>
-    );
-  }
+      <div className="board">
+        <div>
+          {players.length === 0 && <div>Loading...</div>}
+          {(board.length < 3 || board.length) === 5 && <button onClick={newGame}>New Game</button>}
+          {players.length > 0 && board.length === 0 && <button onClick={() => dealBoard(3)}>Flop</button>}
+          {players.length > 0 && board.length === 3 && <button onClick={() => dealBoard(1)}>Turn</button>}
+          {players.length > 0 && board.length === 4 && <button onClick={() => dealBoard(1)}>River</button>}
+        </div>
+        {board.map(card => {
+          return <Card key={`card_${card.value}_${card.suit}`} value={card.value} suit={card.suit} />
+        })}
+      </div>
+    </div>
+  )
 }
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+const container = document.getElementById('app');
+const root = createRoot(container);
+root.render(<App />);

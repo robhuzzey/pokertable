@@ -2,7 +2,7 @@
   {
     "value": 1,
     "suit": "s",
-    "key": "as",
+    "key": "As",
     "entity": "&#127137"
   },
   {
@@ -56,31 +56,31 @@
   {
     "value": 10,
     "suit": "s",
-    "key": "ts",
+    "key": "Ts",
     "entity": "&#127146"
   },
   {
     "value": 11,
     "suit": "s",
-    "key": "js",
+    "key": "Js",
     "entity": "&#127147"
   },
   {
     "value": 12,
     "suit": "s",
-    "key": "qs",
+    "key": "Qs",
     "entity": "&#127149"
   },
   {
     "value": 13,
     "suit": "s",
-    "key": "ks",
+    "key": "Ks",
     "entity": "&#127150"
   },
   {
     "value": 1,
     "suit": "h",
-    "key": "ah",
+    "key": "Ah",
     "entity": "&#127153"
   },
   {
@@ -134,31 +134,31 @@
   {
     "value": 10,
     "suit": "h",
-    "key": "th",
+    "key": "Th",
     "entity": "&#127162"
   },
   {
     "value": 11,
     "suit": "h",
-    "key": "jh",
+    "key": "Jh",
     "entity": "&#127163"
   },
   {
     "value": 12,
     "suit": "h",
-    "key": "qh",
+    "key": "Qh",
     "entity": "&#127165"
   },
   {
     "value": 13,
     "suit": "h",
-    "key": "kh",
+    "key": "Kh",
     "entity": "&#127166"
   },
   {
     "value": 1,
     "suit": "d",
-    "key": "ad",
+    "key": "Ad",
     "entity": "&#127169"
   },
   {
@@ -212,31 +212,31 @@
   {
     "value": 10,
     "suit": "d",
-    "key": "td",
+    "key": "Td",
     "entity": "&#127178"
   },
   {
     "value": 11,
     "suit": "d",
-    "key": "jd",
+    "key": "Jd",
     "entity": "&#127179"
   },
   {
     "value": 12,
     "suit": "d",
-    "key": "qd",
+    "key": "Qd",
     "entity": "&#127181"
   },
   {
     "value": 13,
     "suit": "d",
-    "key": "kd",
+    "key": "Kd",
     "entity": "&#127182"
   },
   {
     "value": 1,
     "suit": "c",
-    "key": "ac",
+    "key": "Ac",
     "entity": "&#127185"
   },
   {
@@ -290,25 +290,25 @@
   {
     "value": 10,
     "suit": "c",
-    "key": "tc",
+    "key": "Tc",
     "entity": "&#127194"
   },
   {
     "value": 11,
     "suit": "c",
-    "key": "jc",
+    "key": "Jc",
     "entity": "&#127195"
   },
   {
     "value": 12,
     "suit": "c",
-    "key": "qc",
+    "key": "Qc",
     "entity": "&#127197"
   },
   {
     "value": 13,
     "suit": "c",
-    "key": "kc",
+    "key": "Kc",
     "entity": "&#127198"
   }
 ]

@@ -9,18 +9,27 @@
     "start": "parcel src/index.html",
     "prebuild": "npm run moveimages",
     "build": "parcel build src/index.html --public-url ./",
-    "deploy": "npm run build && ./scripts/deploy-to-github.sh"
+    "deploy": "npm run build && ./scripts/deploy-to-github.sh",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "images": "^3.0.2",
+    "images": "3.2.4",
     "poker-odds-calculator": "0.3.1",
-    "react": "16.5.2",
-    "react-dom": "16.5.2",
-    "react-scripts": "2.0.3"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "parcel": "^1.11.0"
+    "@babel/preset-env": "^7.25.7",
+    "@babel/preset-typescript": "^7.25.7",
+    "@types/jest": "^29.5.13",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "parcel": "2.12.0",
+    "process": "^0.11.10",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.2"
   }
 }

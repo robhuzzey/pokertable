@@ -2,7 +2,7 @@
   display: none;
 }
 
-#root {
+#app {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 1em;
   width: 100vw;
@@ -18,18 +18,11 @@ button {
   color: #333;
 }
 
-.App {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-}
-
 .table {
   position: relative;
   background: green;
   border-radius: 200px;
-  height: 100%;
+  height: 100vh;
   width: 100%;
 }
 
@@ -44,7 +37,7 @@ button {
 }
 
 .board .card {
-  height: 4em;
+  height: 5em;
 }
 
 .board button {
@@ -56,6 +49,11 @@ button {
 .player {
   position: absolute;
   z-index: 2000;
+  border: 1px solid none;
+}
+
+.best {
+  border: 3px solid red;
 }
 
 .fold {
@@ -72,6 +70,7 @@ button {
   background: #DDD;
   border: 1px solid #333;
   border-radius: 4px;
+  padding: 1em;
 }
 
 .iterations, .loading {
@@ -86,7 +85,11 @@ button {
 }
 
 .card {
-  height:4em;
+  height: 5em;
+}
+
+.equity {
+  color: white;
 }
 
 .excluded {
