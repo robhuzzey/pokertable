@@ -2,7 +2,7 @@
   "name": "pokertable",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "moveimages": "mkdir -p dist && cp -r src/images dist/images",
     "prestart": "npm run moveimages",
