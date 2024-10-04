@@ -1,0 +1,138 @@
+#warnOrientation {
+  display: none;
+}
+
+#app {
+  vertical-align: middle;
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1em;
+}
+
+button {
+  color: #333;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.table {
+  background: green;
+  border-radius: 200px;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.board {
+  text-align: center;
+  width: 60%;
+  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.board .card {
+  height: 5em;
+}
+
+.board button {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.player {
+  z-index: 2000;
+  border: 1px solid none;
+  position: absolute;
+}
+
+.best {
+  border: 3px solid red;
+}
+
+.fold {
+  width: 100%;
+}
+
+.info {
+  text-align: center;
+  vertical-align: middle;
+  z-index: 10000;
+  background: #ddd;
+  border: 1px solid #333;
+  border-radius: 4px;
+  min-height: 2em;
+  margin-top: -4em;
+  padding: 1em;
+  font-size: 10px;
+}
+
+.iterations, .loading {
+  color: #fff;
+  font-size: .75em;
+}
+
+.cards {
+  z-index: -1;
+  margin: 0 auto;
+  position: relative;
+}
+
+.card {
+  height: 5em;
+}
+
+.equity {
+  color: #fff;
+}
+
+.excluded {
+  opacity: .8;
+}
+
+.player:first-child {
+  bottom: 5%;
+  left: 70%;
+}
+
+.player:nth-child(2) {
+  bottom: 5%;
+  left: 20%;
+}
+
+.player:nth-child(3) {
+  top: 40%;
+  left: 2%;
+}
+
+.player:nth-child(4) {
+  top: 5%;
+  left: 20%;
+}
+
+.player:nth-child(5) {
+  top: 5%;
+  left: 70%;
+}
+
+.player:nth-child(6) {
+  top: 40%;
+  right: 5%;
+}
+
+@media (orientation: portrait) {
+  #warnOrientation {
+    display: block;
+  }
+
+  #root {
+    display: none;
+  }
+}
+/*# sourceMappingURL=index.4d663569.css.map */
