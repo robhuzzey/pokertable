@@ -2974,14 +2974,61 @@ const App = ()=>{
     const [folded, setFolded] = (0, _react.useState)([]);
     const [gameCount, setGameCount] = (0, _react.useState)(1);
     const [burnedCards, setBurnedCards] = (0, _react.useState)([]);
-    const newGame = ()=>{
+    const newGame = (0, _react.useCallback)(()=>{
         setDeck([]);
         setPlayers([]);
         setOdds({});
         setBoard([]);
         setFolded([]);
         setGameCount(gameCount + 1);
-    };
+        setBurnedCards([]);
+    }, [
+        setDeck,
+        setPlayers,
+        setOdds,
+        setBoard,
+        setFolded,
+        setGameCount,
+        setBurnedCards,
+        gameCount
+    ]);
+    const burn = (0, _react.useCallback)((numberOfCards)=>{
+        const { cards, deck: remainingDeck } = (0, _getCards.getCards)(numberOfCards, deck);
+        setBurnedCards([
+            ...cards,
+            ...burnedCards
+        ]);
+        setDeck(remainingDeck);
+    }, [
+        (0, _getCards.getCards),
+        setBurnedCards,
+        setDeck,
+        burnedCards
+    ]);
+    const dealBoard = (0, _react.useCallback)((numberOfCards)=>{
+        burn(1);
+        const { cards, deck: remainingDeck } = (0, _getCards.getCards)(numberOfCards, deck);
+        setBoard([
+            ...board,
+            ...cards
+        ]);
+        setDeck(remainingDeck);
+    }, [
+        burn,
+        (0, _getCards.getCards),
+        setBoard,
+        setDeck,
+        deck
+    ]);
+    const fold = (0, _react.useCallback)((i)=>{
+        setFolded([
+            ...folded,
+            i
+        ]);
+    }, [
+        setFolded,
+        folded
+    ]);
     (0, _react.useEffect)(()=>{
         const shuffledCards = (0, _shuffle.shuffle)((0, _cardsJsonDefault.default));
         const { players, deck } = (0, _deal.deal)(shuffledCards, 6, 2);
@@ -3001,7 +3048,6 @@ const App = ()=>{
             return card.key;
         });
         const details = (0, _getOdds.getOdds)(playerCardsInPlay, boardCardsInPlay).details;
-        // Find the maximum equity value
         const maxEquity = Math.max(...details.map((obj)=>obj.equity));
         const oddsAsMap = details.reduce((acc, curr)=>{
             acc[curr.key] = {
@@ -3017,29 +3063,6 @@ const App = ()=>{
         board,
         folded
     ]);
-    const dealBoard = (numberOfCards)=>{
-        burn(1);
-        const { cards, deck: remainingDeck } = (0, _getCards.getCards)(numberOfCards, deck);
-        setBoard([
-            ...board,
-            ...cards
-        ]);
-        setDeck(remainingDeck);
-    };
-    const fold = (i)=>{
-        setFolded([
-            ...folded,
-            i
-        ]);
-    };
-    const burn = (numberOfCards)=>{
-        const { cards, deck: remainingDeck } = (0, _getCards.getCards)(numberOfCards, deck);
-        setBurnedCards([
-            ...cards,
-            ...burnedCards
-        ]);
-        setDeck(remainingDeck);
-    };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -3056,12 +3079,12 @@ const App = ()=>{
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                 className: "equity",
                                 children: [
-                                    odds[key]?.equity,
+                                    odds[key]?.equity || 0,
                                     "%"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/index.js",
-                                lineNumber: 90,
+                                lineNumber: 91,
                                 columnNumber: 15
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -3073,13 +3096,13 @@ const App = ()=>{
                                         suit: card.suit
                                     }, `card_${card.value}_${card.suit}`, false, {
                                         fileName: "src/index.js",
-                                        lineNumber: 93,
+                                        lineNumber: 94,
                                         columnNumber: 26
                                     }, undefined);
                                 })
                             }, void 0, false, {
                                 fileName: "src/index.js",
-                                lineNumber: 91,
+                                lineNumber: 92,
                                 columnNumber: 15
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -3096,25 +3119,25 @@ const App = ()=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "src/index.js",
-                                        lineNumber: 96,
+                                        lineNumber: 97,
                                         columnNumber: 56
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/index.js",
-                                lineNumber: 96,
+                                lineNumber: 97,
                                 columnNumber: 15
                             }, undefined)
                         ]
                     }, `player_${i}`, true, {
                         fileName: "src/index.js",
-                        lineNumber: 89,
+                        lineNumber: 90,
                         columnNumber: 13
                     }, undefined);
                 })
             }, void 0, false, {
                 fileName: "src/index.js",
-                lineNumber: 81,
+                lineNumber: 82,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -3126,7 +3149,7 @@ const App = ()=>{
                                 children: "Loading..."
                             }, void 0, false, {
                                 fileName: "src/index.js",
-                                lineNumber: 103,
+                                lineNumber: 104,
                                 columnNumber: 36
                             }, undefined),
                             (board.length < 3 || board.length) === 5 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -3134,7 +3157,7 @@ const App = ()=>{
                                 children: "New Game"
                             }, void 0, false, {
                                 fileName: "src/index.js",
-                                lineNumber: 104,
+                                lineNumber: 105,
                                 columnNumber: 56
                             }, undefined),
                             players.length > 0 && board.length === 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -3142,7 +3165,7 @@ const App = ()=>{
                                 children: "Flop"
                             }, void 0, false, {
                                 fileName: "src/index.js",
-                                lineNumber: 105,
+                                lineNumber: 106,
                                 columnNumber: 56
                             }, undefined),
                             players.length > 0 && board.length === 3 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -3150,7 +3173,7 @@ const App = ()=>{
                                 children: "Turn"
                             }, void 0, false, {
                                 fileName: "src/index.js",
-                                lineNumber: 106,
+                                lineNumber: 107,
                                 columnNumber: 56
                             }, undefined),
                             players.length > 0 && board.length === 4 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -3158,13 +3181,13 @@ const App = ()=>{
                                 children: "River"
                             }, void 0, false, {
                                 fileName: "src/index.js",
-                                lineNumber: 107,
+                                lineNumber: 108,
                                 columnNumber: 56
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/index.js",
-                        lineNumber: 102,
+                        lineNumber: 103,
                         columnNumber: 9
                     }, undefined),
                     board.map((card)=>{
@@ -3173,30 +3196,30 @@ const App = ()=>{
                             suit: card.suit
                         }, `card_${card.value}_${card.suit}`, false, {
                             fileName: "src/index.js",
-                            lineNumber: 110,
+                            lineNumber: 111,
                             columnNumber: 18
                         }, undefined);
                     })
                 ]
             }, void 0, true, {
                 fileName: "src/index.js",
-                lineNumber: 101,
+                lineNumber: 102,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/index.js",
-        lineNumber: 80,
+        lineNumber: 81,
         columnNumber: 5
     }, undefined);
 };
-_s(App, "Ip8rJ+fgyORbIygmI+MBN4tq07Q=");
+_s(App, "Cx5MbDfuw1mYsWfB+KL3lGjUqoU=");
 _c = App;
 const container = document.getElementById("app");
 const root = (0, _client.createRoot)(container);
 root.render(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(App, {}, void 0, false, {
     fileName: "src/index.js",
-    lineNumber: 119,
+    lineNumber: 120,
     columnNumber: 13
 }, undefined));
 var _c;

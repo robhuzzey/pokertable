@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { createRoot } from 'react-dom/client';
 import cards from "./cards.json";
 import { deal } from "./utils/deal";
@@ -16,14 +16,32 @@ const App = () => {
   const [gameCount, setGameCount] = useState(1);
   const [burnedCards, setBurnedCards] = useState([]);
 
-  const newGame = () => {
+  const newGame = useCallback(() => {
     setDeck([]);
     setPlayers([]);
     setOdds({});
     setBoard([]);
     setFolded([]);
     setGameCount(gameCount + 1);
-  }
+    setBurnedCards([]);
+  }, [setDeck, setPlayers, setOdds, setBoard, setFolded, setGameCount, setBurnedCards, gameCount]);
+
+  const burn = useCallback((numberOfCards) => {
+    const { cards, deck: remainingDeck } = getCards(numberOfCards, deck);
+    setBurnedCards([...cards, ...burnedCards]);
+    setDeck(remainingDeck);
+  }, [getCards, setBurnedCards, setDeck, burnedCards]);
+
+  const dealBoard = useCallback((numberOfCards) => {
+    burn(1);
+    const { cards, deck: remainingDeck } = getCards(numberOfCards, deck);
+    setBoard([...board,...cards]);
+    setDeck(remainingDeck);
+  }, [burn, getCards, setBoard, setDeck, deck])
+
+  const fold = useCallback((i) => {
+    setFolded([...folded, i]);
+  }, [setFolded, folded]);
 
   useEffect(() => {
     const shuffledCards = shuffle(cards);
@@ -46,7 +64,6 @@ const App = () => {
     });
 
     const details = getOdds(playerCardsInPlay, boardCardsInPlay).details;
-    // Find the maximum equity value
     const maxEquity = Math.max(...details.map(obj => obj.equity));
     const oddsAsMap = details.reduce((acc, curr) => {
       acc[curr.key] = {
@@ -56,25 +73,9 @@ const App = () => {
       }
       return acc;
     }, {});
+
     setOdds(oddsAsMap);
   }, [players, board, folded]);
-
-  const dealBoard = (numberOfCards) => {
-    burn(1);
-    const { cards, deck: remainingDeck } = getCards(numberOfCards, deck);
-    setBoard([...board,...cards]);
-    setDeck(remainingDeck);
-  }
-
-  const fold = (i) => {
-    setFolded([...folded, i]);
-  }
-
-  const burn = (numberOfCards) => {
-    const { cards, deck: remainingDeck } = getCards(numberOfCards, deck);
-    setBurnedCards([...cards, ...burnedCards]);
-    setDeck(remainingDeck);
-  }
 
   return (
     <div>
@@ -87,7 +88,7 @@ const App = () => {
           const hasFolded = folded.includes(i);
           return (
             <div key={`player_${i}`} className={`player${hasFolded ? ' excluded' : ''}${odds[key]?.best ? ' best' : ''}`}>
-              <div className="equity">{odds[key]?.equity}%</div>
+              <div className="equity">{odds[key]?.equity || 0}%</div>
               <div className="cards">
                 {cards.map(card => {
                   return <Card className="card" key={`card_${card.value}_${card.suit}`} value={card.value} suit={card.suit} />
