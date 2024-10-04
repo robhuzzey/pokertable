@@ -2,13 +2,13 @@
   "name": "pokertable",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
     "moveimages": "mkdir -p dist && cp -r src/images dist/images",
     "prestart": "npm run moveimages",
     "start": "parcel src/index.html",
     "prebuild": "npm run moveimages",
-    "build": "parcel build src/index.html --public-url ./",
+    "build": "parcel src/index.html --public-url ./",
     "deploy": "npm run build && ./scripts/deploy-to-github.sh",
     "test": "jest",
     "test:watch": "jest --watch"
