@@ -27596,7 +27596,7 @@ const getOdds = (playersCards, board)=>{
     return detailsWithStats;
 };
 
-},{"poker-odds-calculator":"6q9L1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","poker-odds-machine":"fYQgI"}],"6q9L1":[function(require,module,exports) {
+},{"poker-odds-calculator":"6q9L1","poker-odds-machine":"fYQgI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6q9L1":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", {
     value: true
