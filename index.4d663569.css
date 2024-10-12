@@ -49,28 +49,17 @@ button {
 .player {
   z-index: 2000;
   border: 1px solid none;
+  text-align: center;
+  width: 9em;
   position: absolute;
 }
 
-.best {
+.player.best {
   border: 3px solid red;
 }
 
 .fold {
   width: 100%;
-}
-
-.info {
-  text-align: center;
-  vertical-align: middle;
-  z-index: 10000;
-  background: #ddd;
-  border: 1px solid #333;
-  border-radius: 4px;
-  min-height: 2em;
-  margin-top: -4em;
-  padding: 1em;
-  font-size: 10px;
 }
 
 .iterations, .loading {
@@ -86,6 +75,25 @@ button {
 
 .card {
   height: 5em;
+}
+
+.info {
+  --p: 10px;
+  aspect-ratio: 2;
+  clip-path: polygon(var(--p) 0, calc(100% - var(--p)) 0, 100% 100%, 0 100%);
+  background: #fff;
+  margin-top: -2em;
+  padding: .5em;
+  display: block;
+}
+
+.info button {
+  margin: 0 auto;
+  display: block;
+}
+
+.info pre {
+  font-size: xx-small;
 }
 
 .equity {
