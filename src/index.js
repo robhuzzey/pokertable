@@ -63,19 +63,23 @@ const App = () => {
       return card.key;
     });
 
-    const details = getOdds(playerCardsInPlay, boardCardsInPlay).details;
+    const details = getOdds(playerCardsInPlay, boardCardsInPlay);
+    console.log("XXX", details);
     const maxEquity = Math.max(...details.map(obj => obj.equity));
     const oddsAsMap = details.reduce((acc, curr) => {
       acc[curr.key] = {
         equity: curr.equity,
         rank: curr.rank,
-        best: curr.equity === maxEquity
-      }
+        best: curr.equity === maxEquity,
+        stats: curr.handStats
+      };
       return acc;
     }, {});
 
     setOdds(oddsAsMap);
   }, [players, board, folded]);
+
+  console.log("ODDS", odds);
 
   return (
     <div>
@@ -94,7 +98,14 @@ const App = () => {
                   return <Card className="card" key={`card_${card.value}_${card.suit}`} value={card.value} suit={card.suit} />
                 })}
               </div>
-              <span className="info">{odds[key]?.rank} <button onClick={() => fold(i)} disabled={hasFolded ? 'disabled' : ''}>Fold{hasFolded ? 'ed' : ''}</button></span>
+              <div className="info">
+                <button onClick={() => fold(i)} disabled={hasFolded ? 'disabled' : ''}>Fold{hasFolded ? 'ed' : ''}</button>{odds[key]?.rank}
+                <pre>
+                  {Object.keys(odds[key]?.stats || {}).map(statName => {
+                    return `${statName}: ${odds[key]?.stats[statName].percent}%\n`
+                  })}
+                </pre>
+              </div>
             </div>
           )
         })}

@@ -50,27 +50,16 @@ button {
   position: absolute;
   z-index: 2000;
   border: 1px solid none;
+  width: 9em;
+  text-align: center;
 }
 
-.best {
+.player.best {
   border: 3px solid red;
 }
 
 .fold {
   width: 100%;
-}
-
-.info {
-  text-align: center;
-  vertical-align: middle;
-  font-size: 10px;
-  z-index: 10000;
-  margin-top: -4em;
-  min-height: 2em;
-  background: #DDD;
-  border: 1px solid #333;
-  border-radius: 4px;
-  padding: 1em;
 }
 
 .iterations, .loading {
@@ -87,6 +76,41 @@ button {
 .card {
   height: 5em;
 }
+
+.info {
+  padding: 0.5em;
+  margin-top: -2em;
+  background: white;
+  display: block;
+  --p: 10px; /* control the shape (can be percentage) */
+  /* height: 180px; */
+  aspect-ratio: 2/1;
+  clip-path: polygon(var(--p) 0,calc(100% - var(--p)) 0,100% 100%,0 100%);
+}
+
+.info button {
+  display: block;
+  margin: 0 auto;
+}
+
+.info pre {
+  font-size: xx-small;
+}
+
+/*
+
+.info {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 10px;
+  z-index: 10000;
+  margin-top: -4em;
+  min-height: 2em;
+  background: #DDD;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 1em;
+} */
 
 .equity {
   color: white;
